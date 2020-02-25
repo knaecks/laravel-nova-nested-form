@@ -68,6 +68,8 @@ class NestedFormSchema implements JsonSerializable
         $this->request->route()->setParameter('resource', $this->parentForm->resourceName);
 
         $fields = $this->filterFields()->map(function ($field) {
+            $field->resolve($this->model);
+            
             if ($field instanceof NestedForm) {
                 $field->attribute = $this->attribute($field->attribute);
             } else {
@@ -76,8 +78,6 @@ class NestedFormSchema implements JsonSerializable
                     'originalAttribute' => $field->attribute
                 ]);
             }
-
-            $field->resolve($this->model);
 
             return $this->setComponent($field)->jsonSerialize();
         })->values();
